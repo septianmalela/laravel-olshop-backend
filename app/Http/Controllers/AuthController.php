@@ -38,6 +38,9 @@ class AuthController extends Controller
         }
 
         $user = Auth::guard('api')->user();
+        $user->token_version += 1;
+        $user->save();
+
         return response()->json([
             'status' => 'success',
             'user' => $user,
