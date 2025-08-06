@@ -4,8 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\CheckTokenVersion;
+
+// Admin Controller
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProductCategoryController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -19,5 +22,13 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware(['auth:api', 'is_admin'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index']);
+
+        Route::controller(ProductCategoryController::class)->group(function () {
+            Route::get('product_categories', 'index');
+            Route::post('product_categories', 'store');
+            Route::get('product_categories/{id}', 'show');
+            Route::put('product_categories/{id}', 'update');
+            Route::delete('product_categories/{id}', 'destroy');
+        });
     });
 });
