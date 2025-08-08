@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->float('price');
-            $table->integer('qty');
+            $table->integer('qty')->default(1);
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('cart_id');
             $table->timestamps();
