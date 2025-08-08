@@ -17,6 +17,7 @@ return new class extends Migration
             $table->float('price');
             $table->integer('stock');
             $table->integer('sold_qty')->default(0);
+            $table->string('image')->nullable();
             $table->unsignedBigInteger('product_category_id');
             $table->timestamps();
 

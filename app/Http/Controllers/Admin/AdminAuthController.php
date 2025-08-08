@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class AdminAuthController extends Controller
 {
@@ -30,6 +32,32 @@ class AdminAuthController extends Controller
             'token' => $token,
             'type' => 'bearer',
             'user' => Auth::guard('api')->user(),
+        ]);
+    }
+
+    public function register(Request $request){
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
+        ]);
+
+        $admin = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => 'admin'
+        ]);
+
+        $token = Auth::guard('api')->login($admin);
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'User created successfully',
+            'admin'   => $admin,
+            'authorisation' => [
+                'token' => $token,
+                'type'  => 'bearer',
+            ]
         ]);
     }
 }

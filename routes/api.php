@@ -39,7 +39,10 @@ Route::prefix('user')->group(function () {
 });
 
 Route::prefix('admin')->group(function () {
-    Route::post('/login', [AdminAuthController::class, 'login']);
+    Route::controller(AdminAuthController::class)->group(function () {
+        Route::post('login', 'login');
+        Route::post('register', 'register');
+    });
 
     Route::middleware(['auth:api', 'is_admin'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index']);
