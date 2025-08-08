@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 use App\Models\ProductCategory;
 
 class ProductCategoryController extends Controller
@@ -21,11 +22,18 @@ class ProductCategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|unique:product_categories|max:255'
+            'name'  => 'required|string|unique:product_categories|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
+        $path = null;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('categories', 'public');
+        }
+
         $product_category = ProductCategory::create([
-            'name' => $request->name
+            'name'  => $request->name,
+            'image' => $path
         ]);
 
         return response()->json([
@@ -59,7 +67,8 @@ class ProductCategoryController extends Controller
                 'string',
                 'max:255',
                 Rule::unique('product_categories')->ignore($id),
-            ]
+            ],
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         $product_category = ProductCategory::find($id);
@@ -69,6 +78,15 @@ class ProductCategoryController extends Controller
                 'message' => 'Product category not found',
             ], 404);
         } else {
+            if ($request->hasFile('image')) {
+                if ($product_category->image) {
+                    Storage::disk('public')->delete($product_category->image);
+                }
+
+                $path = $request->file('image')->store('categories', 'public');
+                $product_category->image = $path;
+            }
+
             $product_category->name = $request->name;
             $product_category->save();
 
