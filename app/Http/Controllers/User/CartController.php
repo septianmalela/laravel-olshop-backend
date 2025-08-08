@@ -44,4 +44,15 @@ class CartController extends Controller
             'cart_item' => $cartItem->load('product'),
         ]);
     }
+
+    public function delete_cart_item($id)
+    {
+        $user     = Auth::guard('api')->user();
+        $cartItem = (new CartService)->deleteCartItem($user->id, $id);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Cart item deleted successfully',
+        ]);
+    }
 }

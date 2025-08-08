@@ -41,6 +41,33 @@ class CartService
         });
     }
 
+    public function deleteCartItem($userId, $cartItemId)
+    {
+        return DB::transaction(function () use ($userId, $cartItemId) {
+            $cart = Cart::where('user_id', $userId)->first();
+
+            if (!$cart) {
+                throw ValidationException::withMessages([
+                    'cart' => 'Cart not found.'
+                ]);
+            }
+
+            $cartItem = CartItem::where('id', $cartItemId)->where('cart_id', $cart->id)->first();
+
+            if (!$cartItem) {
+                throw ValidationException::withMessages([
+                    'cart_item' => 'Cart item not found, please try again!'
+                ]);
+            }
+
+            $cartItem->delete();
+
+            $this->updateCartTotal($cart);
+
+            return true;
+        });
+    }
+
     public function updateCartTotal(Cart $cart)
     {
         $total = $cart->cart_items()->with('product')->get()->sum(function ($item) {
@@ -48,6 +75,7 @@ class CartService
         });
 
         $cart->total_price = $total;
+        $cart->total_item  = $cart->cart_items()->count();;
         $cart->save();
     }
 }

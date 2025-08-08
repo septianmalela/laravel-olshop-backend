@@ -26,6 +26,7 @@ Route::prefix('user')->group(function () {
         Route::controller(CartController::class)->group(function () {
             Route::get('carts', 'index');
             Route::post('add_to_cart', 'add_to_cart');
+            Route::delete('delete_cart_item/{id}', 'delete_cart_item');
         });
     });
 });
