@@ -9,6 +9,7 @@ use App\Http\Middleware\CheckTokenVersion;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\Admin\ProductController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -29,6 +30,14 @@ Route::prefix('admin')->group(function () {
             Route::get('product_categories/{id}', 'show');
             Route::put('product_categories/{id}', 'update');
             Route::delete('product_categories/{id}', 'destroy');
+        });
+
+        Route::controller(ProductController::class)->group(function () {
+            Route::get('products', 'index');
+            Route::post('products', 'store');
+            Route::get('products/{id}', 'show');
+            Route::put('products/{id}', 'update');
+            Route::delete('products/{id}', 'destroy');
         });
     });
 });

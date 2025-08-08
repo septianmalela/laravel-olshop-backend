@@ -36,8 +36,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (TokenExpiredException $e, $request) {
         return new JsonResponse([
-            'status' => 'error',
-            'message' => 'Token has expired',
+                'status' => 'error',
+                'message' => 'Token has expired',
+                'errors' => [
+                    'message' => 'Token has expired'
+                ]
             ], 401);
         });
 
@@ -46,6 +49,9 @@ return Application::configure(basePath: dirname(__DIR__))
             return new JsonResponse([
                 'status' => 'error',
                 'message' => 'Invalid token',
+                'errors' => [
+                    'message' => 'Invalid Token'
+                ]
             ], 401);
         });
 
@@ -54,6 +60,9 @@ return Application::configure(basePath: dirname(__DIR__))
             return new JsonResponse([
                 'status' => 'error',
                 'message' => 'Token has been blacklisted',
+                'errors' => [
+                    'message' => 'Token has been blacklisted'
+                ]
             ], 401);
         });
 
@@ -62,6 +71,9 @@ return Application::configure(basePath: dirname(__DIR__))
             return new JsonResponse([
                 'status' => 'error',
                 'message' => 'JWT error: ' . $e->getMessage(),
+                'errors' => [
+                    'message' => 'JWT error: ' . $e->getMessage()
+                ]
             ], 401);
         });
 
@@ -69,6 +81,9 @@ return Application::configure(basePath: dirname(__DIR__))
             return new JsonResponse([
                 'status' => 'error',
                 'message' => 'Route not found',
+                'errors' => [
+                    'message' => 'Route not found'
+                ]
             ], 404);
         });
     })->create();
