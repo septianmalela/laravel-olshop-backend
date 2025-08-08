@@ -39,9 +39,10 @@ class CartController extends Controller
         $cartItem = (new CartService)->addToCart($user->id, $request->product_id, $request->qty);
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Item added to cart',
-            'cart_item' => $cartItem->load('product'),
+            'status'    => 'success',
+            'message'   => 'Item added to cart',
+            'cart'      => $user->cart()->get(),
+            'cart_item' => $cartItem->load('product')
         ]);
     }
 

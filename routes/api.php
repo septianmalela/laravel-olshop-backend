@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ProductController;
 
 // User Controller
 use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\OrderController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -27,6 +28,12 @@ Route::prefix('user')->group(function () {
             Route::get('carts', 'index');
             Route::post('add_to_cart', 'add_to_cart');
             Route::delete('delete_cart_item/{id}', 'delete_cart_item');
+        });
+
+        Route::controller(OrderController::class)->group(function () {
+            Route::get('orders', 'index');
+            Route::post('create_order', 'create_order');
+            Route::get('orders/{id}', 'show');
         });
     });
 });

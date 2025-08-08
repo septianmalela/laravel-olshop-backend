@@ -16,7 +16,7 @@ class CartService
 
             if ($qty > $product->stock) {
                 throw ValidationException::withMessages([
-                    'qty' => 'This product out off stock'
+                    'qty' => 'This product out of stock'
                 ]);
             }
 
