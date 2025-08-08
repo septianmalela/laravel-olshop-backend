@@ -11,11 +11,23 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 
+// User Controller
+use App\Http\Controllers\User\CartController;
+
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
+});
+
+Route::prefix('user')->group(function () {
+    Route::middleware(['auth:api', 'is_user'])->group(function () {
+        Route::controller(CartController::class)->group(function () {
+            Route::get('carts', 'index');
+            Route::post('add_to_cart', 'add_to_cart');
+        });
+    });
 });
 
 Route::prefix('admin')->group(function () {
