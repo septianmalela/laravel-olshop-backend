@@ -5,11 +5,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\CheckTokenVersion;
 
+// Global Controller(without login)
+use App\Http\Controllers\ProductController;
+
 // Admin Controller
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductCategoryController;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 
 // User Controller
 use App\Http\Controllers\User\CartController;
@@ -21,6 +24,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
 });
+
+Route::get('/products', [ProductController::class, 'index']);
 
 Route::prefix('user')->group(function () {
     Route::middleware(['auth:api', 'is_user'])->group(function () {
@@ -55,7 +60,7 @@ Route::prefix('admin')->group(function () {
             Route::delete('product_categories/{id}', 'destroy');
         });
 
-        Route::controller(ProductController::class)->group(function () {
+        Route::controller(AdminProductController::class)->group(function () {
             Route::get('products', 'index');
             Route::post('products', 'store');
             Route::get('products/{id}', 'show');
