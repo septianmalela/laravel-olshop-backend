@@ -24,14 +24,21 @@ class ProductController extends Controller
             'name'                 => 'required|string|max:255',
             'price'                => 'required|numeric',
             'stock'                => 'required|integer',
-            'product_category_id'  => 'required|exists:product_categories,id'
+            'product_category_id'  => 'required|exists:product_categories,id',
+            'image'                => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
+        $path = null;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+        }
+
         $product = Product::create([
-            'name'  => $request->name,
-            'price' => $request->price,
-            'stock' => $request->stock,
-            'product_category_id' => $request->product_category_id
+            'name'                => $request->name,
+            'price'               => $request->price,
+            'stock'               => $request->stock,
+            'product_category_id' => $request->product_category_id,
+            'image'               => $path
         ]);
         $product->load('product_category');
 
@@ -67,7 +74,8 @@ class ProductController extends Controller
                 'max:255'
             ],
             'price' => 'required|numeric',
-            'stock' => 'required|integer'
+            'stock' => 'required|integer',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         $product = Product::with('product_category')->find($id);
@@ -77,6 +85,15 @@ class ProductController extends Controller
                 'message' => 'Product not found',
             ], 404);
         } else {
+            if ($request->hasFile('image')) {
+                if ($product->image) {
+                    Storage::disk('public')->delete($product->image);
+                }
+
+                $path           = $request->file('image')->store('products', 'public');
+                $product->image = $path;
+            }
+
             $product->name  = $request->name;
             $product->price = $request->price;
             $product->stock = $request->stock;
