@@ -15,8 +15,9 @@ class ProductController extends Controller
             $query->where('product_category_id', $request->input('product_category_id'));
         }
 
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        if ($request->filled('name')) {
+            $name = trim($request->input('name'));
+            $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($name) . '%']);
         }
 
         $products = $query->get();
