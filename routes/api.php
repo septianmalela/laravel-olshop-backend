@@ -7,11 +7,12 @@ use App\Http\Middleware\CheckTokenVersion;
 
 // Global Controller(without login)
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductCategoryController;
 
 // Admin Controller
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\Admin\ProductCategoryController as AdminProductCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 
 // User Controller
@@ -26,6 +27,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::get('/products', [ProductController::class, 'index']);
+Route::get('/product_categories', [ProductCategoryController::class, 'index']);
 
 Route::prefix('user')->group(function () {
     Route::middleware(['auth:api', 'is_user'])->group(function () {
@@ -52,7 +54,7 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['auth:api', 'is_admin'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index']);
 
-        Route::controller(ProductCategoryController::class)->group(function () {
+        Route::controller(AdminProductCategoryController::class)->group(function () {
             Route::get('product_categories', 'index');
             Route::post('product_categories', 'store');
             Route::get('product_categories/{id}', 'show');
